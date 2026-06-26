@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>SOL-NET // Deep Space Terminal</title>
+<meta name="description" content="An interactive 3D survey of the Solar System and the Milky Way, presented as a declassified terminal interface.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%2300ff9c%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- CRT / SCANLINE / NOISE OVERLAYS -->
+<div class="crt-scanlines" aria-hidden="true"></div>
+<div class="crt-vignette" aria-hidden="true"></div>
+<div class="crt-flicker" aria-hidden="true"></div>
+<div class="noise" aria-hidden="true"></div>
+
+<!-- BOOT SEQUENCE -->
+<section id="boot-screen" aria-hidden="true">
+  <div class="boot-inner">
+    <pre id="boot-text" class="boot-text"></pre>
+    <div class="boot-bar"><div class="boot-bar-fill" id="boot-bar-fill"></div></div>
+  </div>
+</section>
+
+<!-- ENTER PROMPT -->
+<button id="enter-btn" class="enter-btn hidden">
+  <span class="enter-bracket">[</span> ESTABLISH UPLINK <span class="enter-bracket">]</span>
+</button>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+
+  <!-- TOP HUD BAR -->
+  <header class="hud-top">
+    <div class="hud-brand">
+      <span class="brand-dot"></span>
+      SOL&#8209;NET <span class="brand-version">v2.7</span>
+    </div>
+    <div class="hud-status">
+      <span class="status-item">LINK: <strong class="status-ok">STABLE</strong></span>
+      <span class="status-item hide-sm">SECTOR: <strong>SOL&#8209;3</strong></span>
+      <span class="status-item" id="hud-clock">00:00:00 UTC</span>
+    </div>
+    <button class="hud-menu-btn" id="info-toggle" aria-label="Toggle mission brief">?</button>
+  </header>
+
+  <!-- MISSION BRIEF DRAWER -->
+  <div id="info-drawer" class="info-drawer hidden">
+    <h2>MISSION BRIEF</h2>
+    <p>You have accessed a declassified survey terminal cataloguing the eight planetary bodies and one dwarf
+    planet orbiting Sol, plus our position within the Milky Way galaxy.</p>
+    <ul>
+      <li><strong>DRAG</strong> the viewport to orbit your vantage point</li>
+      <li><strong>SWIPE</strong> or use <strong>◂ ▸</strong> to cycle target files</li>
+      <li><strong>TAP</strong> a body in the viewport to lock target</li>
+      <li>Scroll down for galactic survey &amp; formula log</li>
+    </ul>
+    <button class="drawer-close" id="info-close">CLOSE [X]</button>
+  </div>
+
+  <!-- 3D VIEWPORT -->
+  <main class="viewport">
+    <canvas id="scene-canvas"></canvas>
+
+    <div class="reticle" aria-hidden="true">
+      <div class="reticle-ring"></div>
+      <div class="reticle-cross"></div>
+    </div>
+
+    <div class="scan-tag top-left">REC ●</div>
+    <div class="scan-tag top-right" id="coord-tag">X:0000 Y:0000 Z:0000</div>
+
+    <!-- NAV ARROWS -->
+    <button class="nav-arrow nav-prev" id="nav-prev" aria-label="Previous body">◂</button>
+    <button class="nav-arrow nav-next" id="nav-next" aria-label="Next body">▸</button>
+
+    <!-- TARGET INDEX STRIP -->
+    <div class="target-strip" id="target-strip"></div>
+
+    <!-- SWIPEABLE DOSSIER CARD -->
+    <section class="dossier" id="dossier" tabindex="0">
+      <div class="dossier-glitch-bar"></div>
+      <header class="dossier-head">
+        <span class="dossier-file">FILE No. <span id="d-index">00</span></span>
+        <span class="dossier-class" id="d-class">CLASSIFIED</span>
+      </header>
+
+      <h1 class="dossier-title" id="d-name">LOADING...</h1>
+      <p class="dossier-tagline" id="d-tagline">&mdash;</p>
+
+      <div class="dossier-grid" id="d-grid"><!-- filled by JS --></div>
+
+      <p class="dossier-note" id="d-note"></p>
+
+      <div class="dossier-swipe-hint">
+        <span class="swipe-chevron">‹</span> SWIPE TO CHANGE TARGET <span class="swipe-chevron">›</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- FORMULA LOG -->
+  <section class="page-section" id="formulas">
+    <div class="section-head">
+      <span class="section-tag">LOG_002</span>
+      <h2>FORMULAE.LOG</h2>
+      <p class="section-sub">The mathematics underwriting every figure in this terminal.</p>
+    </div>
+    <div class="formula-grid" id="formula-grid"><!-- filled by JS --></div>
+  </section>
+
+  <!-- MILKY WAY SECTION -->
+  <section class="page-section" id="galaxy">
+    <div class="section-head">
+      <span class="section-tag">LOG_003</span>
+      <h2>GALACTIC SURVEY &mdash; MILKY&nbsp;WAY</h2>
+      <p class="section-sub">Zooming out: our solar system is one of billions of stellar systems on a single
+      spiral arm.</p>
+    </div>
+
+    <div class="galaxy-wrap">
+      <canvas id="galaxy-canvas"></canvas>
+      <div class="galaxy-marker" id="galaxy-marker">
+        <span class="galaxy-marker-dot"></span>
+        <span class="galaxy-marker-label">YOU ARE HERE<br>Orion&#8211;Cygnus Arm</span>
+      </div>
+    </div>
+
+    <div class="galaxy-facts" id="galaxy-facts"><!-- filled by JS --></div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-line">// END OF TRANSMISSION //</div>
+    <div class="footer-meta">
+      <span>SOL&#8209;NET TERMINAL &middot; BUILT WITH THREE.JS</span>
+      <span>DATA: NASA / JPL PUBLIC ARCHIVES (APPROX.)</span>
+    </div>
+  </footer>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script src="data.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
