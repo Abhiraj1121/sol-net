@@ -393,6 +393,63 @@ a { color: var(--green); }
 .footer-line { font-family: var(--font-display); color: var(--green); font-size: 13px; letter-spacing: 0.1em; margin-bottom: 10px; }
 .footer-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 10.5px; color: var(--text-dim); letter-spacing: 0.04em; }
 
+/* ---------- SPACESHIP COCKPIT OVERLAY ---------- */
+.cockpit-frame {
+  position: absolute; inset: 0; z-index: 55; pointer-events: none;
+}
+.cockpit-glass {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 105%, rgba(0,255,156,0.10) 0%, rgba(0,0,0,0) 45%),
+    linear-gradient(to bottom, rgba(4,7,10,0.0) 80%, rgba(4,7,10,0.35) 100%);
+  box-shadow: inset 0 0 140px rgba(0,0,0,0.55), inset 0 0 40px rgba(0,255,156,0.05);
+}
+.cockpit-strut {
+  position: absolute;
+  width: 22vw; height: 22vw;
+  max-width: 280px; max-height: 280px;
+  border: 2px solid rgba(0,255,156,0.16);
+  opacity: 0.55;
+}
+.strut-tl { top: -10%; left: -10%; border-right: none; border-bottom: none; border-radius: 0 0 60% 0; }
+.strut-tr { top: -10%; right: -10%; border-left: none; border-bottom: none; border-radius: 0 0 0 60%; }
+.strut-bl { bottom: -10%; left: -10%; border-right: none; border-top: none; border-radius: 0 60% 0 0; }
+.strut-br { bottom: -10%; right: -10%; border-left: none; border-top: none; border-radius: 60% 0 0 0; }
+.cockpit-hud-label {
+  position: absolute;
+  font-family: var(--font-body); font-size: 10.5px; letter-spacing: 0.08em;
+  color: var(--text-dim); text-shadow: 0 0 6px rgba(0,255,156,0.25);
+}
+.cockpit-hud-label span { color: var(--green); }
+.hud-speed { bottom: 16px; left: 18px; }
+.hud-heading { bottom: 16px; right: 18px; }
+
+/* ---------- MOON HINT ---------- */
+.moon-hint {
+  position: absolute; top: 96px; left: 50%; z-index: 65;
+  transform: translateX(-50%);
+  font-size: 10.5px; letter-spacing: 0.06em; color: var(--amber);
+  background: rgba(7,13,17,0.7); border: 1px solid rgba(255,176,0,0.35);
+  padding: 5px 12px; white-space: nowrap;
+  animation: dropIn 0.3s ease;
+}
+
+/* ---------- MOON DOSSIER ---------- */
+.moon-dossier {
+  bottom: calc(46vh + 28px);
+  max-height: 34vh;
+  border-color: rgba(255,176,0,0.4);
+  box-shadow: 0 0 40px rgba(255,176,0,0.08), inset 0 0 40px rgba(255,176,0,0.02);
+}
+.moon-bar { background: linear-gradient(to right, var(--amber), transparent) !important; }
+.moon-title { color: var(--amber) !important; text-shadow: 0 0 14px rgba(255,176,0,0.4) !important; }
+.moon-close {
+  background: transparent; border: 1px solid rgba(255,176,0,0.4); color: var(--amber);
+  font-family: var(--font-body); font-size: 10px; letter-spacing: 0.06em;
+  padding: 3px 8px; cursor: pointer;
+}
+.moon-close:hover { background: rgba(255,176,0,0.1); }
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 860px) {
   .formula-grid { grid-template-columns: 1fr 1fr; }
@@ -410,6 +467,10 @@ a { color: var(--green); }
   .section-head h2 { font-size: 22px; }
   .scan-tag.top-left, .scan-tag.top-right { top: 56px; font-size: 9px; }
   .reticle { width: 90px; height: 90px; top: 30%; }
+  .cockpit-strut { width: 34vw; height: 34vw; }
+  .cockpit-hud-label { font-size: 9px; }
+  .moon-hint { top: 80px; font-size: 9.5px; max-width: 88vw; white-space: normal; text-align: center; }
+  .moon-dossier { bottom: calc(50vh + 22px); max-height: 30vh; }
 }
 @media (max-width: 380px) {
   .dossier-grid { grid-template-columns: 1fr; }

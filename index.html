@@ -58,6 +58,7 @@
       <li><strong>DRAG</strong> the viewport to orbit your vantage point</li>
       <li><strong>SWIPE</strong> or use <strong>◂ ▸</strong> to cycle target files</li>
       <li><strong>TAP</strong> a body in the viewport to lock target</li>
+      <li><strong>TAP</strong> a planet with moons to watch them enter orbit, then tap a moon for its file</li>
       <li>Scroll down for galactic survey &amp; formula log</li>
     </ul>
     <button class="drawer-close" id="info-close">CLOSE [X]</button>
@@ -67,6 +68,17 @@
   <main class="viewport">
     <canvas id="scene-canvas"></canvas>
 
+    <!-- SPACESHIP COCKPIT OVERLAY -->
+    <div class="cockpit-frame" aria-hidden="true">
+      <div class="cockpit-strut strut-tl"></div>
+      <div class="cockpit-strut strut-tr"></div>
+      <div class="cockpit-strut strut-bl"></div>
+      <div class="cockpit-strut strut-br"></div>
+      <div class="cockpit-glass"></div>
+      <div class="cockpit-hud-label hud-speed">VELOCITY <span id="hud-speed-val">0.0</span> AU/s</div>
+      <div class="cockpit-hud-label hud-heading">HEADING <span id="hud-heading-val">000°</span></div>
+    </div>
+
     <div class="reticle" aria-hidden="true">
       <div class="reticle-ring"></div>
       <div class="reticle-cross"></div>
@@ -74,6 +86,9 @@
 
     <div class="scan-tag top-left">REC ●</div>
     <div class="scan-tag top-right" id="coord-tag">X:0000 Y:0000 Z:0000</div>
+
+    <!-- MOON HINT -->
+    <div class="moon-hint hidden" id="moon-hint">◉ MOONS IN ORBIT</div>
 
     <!-- NAV ARROWS -->
     <button class="nav-arrow nav-prev" id="nav-prev" aria-label="Previous body">◂</button>
@@ -100,6 +115,22 @@
       <div class="dossier-swipe-hint">
         <span class="swipe-chevron">‹</span> SWIPE TO CHANGE TARGET <span class="swipe-chevron">›</span>
       </div>
+    </section>
+
+    <!-- MOON DOSSIER CARD (shown when a moon is selected) -->
+    <section class="dossier moon-dossier hidden" id="moon-dossier" tabindex="0">
+      <div class="dossier-glitch-bar moon-bar"></div>
+      <header class="dossier-head">
+        <span class="dossier-file" id="md-parent">PARENT BODY</span>
+        <button class="moon-close" id="moon-close" aria-label="Close satellite file">CLOSE [X]</button>
+      </header>
+
+      <h1 class="dossier-title moon-title" id="md-name">LOADING...</h1>
+      <p class="dossier-tagline" id="md-tagline">&mdash;</p>
+
+      <div class="dossier-grid" id="md-grid"><!-- filled by JS --></div>
+
+      <p class="dossier-note" id="md-note"></p>
     </section>
   </main>
 
